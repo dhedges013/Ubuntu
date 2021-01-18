@@ -1,0 +1,25 @@
+#!/bin/bash
+#Find debug.log files and print to file in GBs 
+
+echo " "
+echo "Found the Following Debug.log files"
+echo "-----------------------------------"
+
+sudo find /home/* -name 'debug.log' -ls | awk '{print $11,($7/1000000000)}' > debugfiles
+var1=$(cat debugfiles)
+echo "$var1"
+
+#Find Files larger than 1GB and send to file largedebugfiles
+echo " "
+echo " Debug.log files over 1GB "
+echo "------------"
+
+awk '$2>1 {print $0}' debugfiles > largedebugfiles
+var2=$(cat largedebugfiles)
+echo "$var2" 
+
+#Remove any debug files over 1gb
+echo " "
+echo "-------------------------------"
+awk '{print $0}' largedebugfiles | xargs /bin/rm -f
+echo " Files deleted "
